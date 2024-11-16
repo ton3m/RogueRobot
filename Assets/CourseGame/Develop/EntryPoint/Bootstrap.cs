@@ -1,4 +1,5 @@
-﻿using Assets.CourseGame.Develop.DI;
+﻿using Assets.CourseGame.Develop.CommonServices.LoadingScreen;
+using Assets.CourseGame.Develop.DI;
 using System.Collections;
 using UnityEngine;
 
@@ -10,13 +11,19 @@ namespace Assets.CourseGame.Develop.EntryPoint
     {
         public IEnumerator Run(DIContainer container)
         {
-            //Включаем загрузочную штору после всех регистраций
+            ILoadingCurtain loadingCurtain = container.Resolve<ILoadingCurtain>();
+
+            loadingCurtain.Show();
+
+            Debug.Log("Начинается инициализация сервисов");
 
             //Инициализаций всех (подгрузка данных/конфигов/инит сервисов рекламы/аналитики и тп)
 
             yield return new WaitForSeconds(1.5f);//инициализация какого-то процесса инициализация
 
-            //скрываем штору 
+            Debug.Log("Завершается инициализация сервисов проекта, начинается переход на какую-то сцену");
+
+            loadingCurtain.Hide();
 
             //переход на следующий сцену с помощью сервиса смены сцен
         }

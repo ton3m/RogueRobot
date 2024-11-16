@@ -1,4 +1,5 @@
 ﻿using Assets.CourseGame.Develop.CommonServices.LoadingScreen;
+using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.DI;
 using System.Collections;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace Assets.CourseGame.Develop.EntryPoint
         public IEnumerator Run(DIContainer container)
         {
             ILoadingCurtain loadingCurtain = container.Resolve<ILoadingCurtain>();
+            SceneSwitcher sceneSwitcher = container.Resolve<SceneSwitcher>();
 
             loadingCurtain.Show();
 
@@ -26,6 +28,8 @@ namespace Assets.CourseGame.Develop.EntryPoint
             loadingCurtain.Hide();
 
             //переход на следующий сцену с помощью сервиса смены сцен
+
+            sceneSwitcher.ProcessSwitchSceneFor(new OutpurBootstrapArgs(new MainMenuInputArgs()));
         }
     }
 }

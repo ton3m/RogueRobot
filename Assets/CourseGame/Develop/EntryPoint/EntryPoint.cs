@@ -1,7 +1,9 @@
 ﻿using Assets.CourseGame.Develop.CommonServices.AssetsManagment;
 using Assets.CourseGame.Develop.CommonServices.CoroutinePerfomer;
 using Assets.CourseGame.Develop.CommonServices.LoadingScreen;
+using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.DI;
+using System;
 using UnityEngine;
 
 namespace Assets.CourseGame.Develop.EntryPoint
@@ -22,7 +24,10 @@ namespace Assets.CourseGame.Develop.EntryPoint
 
             RegisterResourcesAssetLoader(projectContainer);
             RegisterCoroutinePerformer(projectContainer);
+
+            RegisterLoadingCurtain(projectContainer);
             RegisterSceneLoader(projectContainer);
+            RegisterSceneSwitcher(projectContainer);
 
             //все регистрации прошли
             projectContainer.Resolve<ICoroutinePerformer>().StartPerform(_gameBootstrap.Run(projectContainer));
@@ -33,6 +38,14 @@ namespace Assets.CourseGame.Develop.EntryPoint
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 144;
         }
+
+        private void RegisterSceneSwitcher(DIContainer container)
+            => container.RegisterAsSingle(c 
+                => new SceneSwitcher(
+                    c.Resolve<ICoroutinePerformer>(), 
+                    c.Resolve<ILoadingCurtain>(),
+                    c.Resolve<ISceneLoader>(), 
+                    c));
 
         private void RegisterResourcesAssetLoader(DIContainer container) 
             => container.RegisterAsSingle(c => new ResourcesAssetLoader());
@@ -50,7 +63,7 @@ namespace Assets.CourseGame.Develop.EntryPoint
             });
         }
 
-        private void RegisterSceneLoader(DIContainer container)
+        private void RegisterLoadingCurtain(DIContainer container)
         {
             container.RegisterAsSingle<ILoadingCurtain>(c =>
             {
@@ -63,5 +76,7 @@ namespace Assets.CourseGame.Develop.EntryPoint
             });
         }
 
+        private void RegisterSceneLoader(DIContainer container)
+            => container.RegisterAsSingle<ISceneLoader>(c => new DefaultSceneLoader());
     }
 }

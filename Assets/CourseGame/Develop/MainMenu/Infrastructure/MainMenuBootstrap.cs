@@ -1,3 +1,5 @@
+using Assets.CourseGame.Develop.CommonServices.DataManagment;
+using Assets.CourseGame.Develop.CommonServices.DataManagment.DataProviders;
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.DI;
 using System.Collections;
@@ -26,6 +28,29 @@ public class MainMenuBootstrap : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _container.Resolve<SceneSwitcher>().ProcessSwitchSceneFor(new OutputMainMenuArgs(new GameplayInputArgs(2)));
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            ISaveLoadSerivce saveLoadSerivce = _container.Resolve<ISaveLoadSerivce>();
+
+            if(saveLoadSerivce.TryLoad(out PlayerData playerData))
+            {
+                playerData.Money++;
+                playerData.CompletedLevels.Add(playerData.Money);
+
+                saveLoadSerivce.Save(playerData);
+            }
+            else
+            {
+                PlayerData originPlayerData = new PlayerData()
+                {
+                    Money = 0,
+                    CompletedLevels = new()
+                };
+
+                saveLoadSerivce.Save(originPlayerData);
+            }
         }
     }
 }

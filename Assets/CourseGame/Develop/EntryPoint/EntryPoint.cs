@@ -1,5 +1,6 @@
 ﻿using Assets.CourseGame.Develop.CommonServices.AssetsManagment;
 using Assets.CourseGame.Develop.CommonServices.CoroutinePerfomer;
+using Assets.CourseGame.Develop.CommonServices.DataManagment;
 using Assets.CourseGame.Develop.CommonServices.LoadingScreen;
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.DI;
@@ -29,6 +30,8 @@ namespace Assets.CourseGame.Develop.EntryPoint
             RegisterSceneLoader(projectContainer);
             RegisterSceneSwitcher(projectContainer);
 
+            RegisterSaveLoadService(projectContainer);
+
             //все регистрации прошли
             projectContainer.Resolve<ICoroutinePerformer>().StartPerform(_gameBootstrap.Run(projectContainer));
         }
@@ -38,6 +41,9 @@ namespace Assets.CourseGame.Develop.EntryPoint
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 144;
         }
+
+        private void RegisterSaveLoadService(DIContainer container)
+            => container.RegisterAsSingle<ISaveLoadSerivce>(c => new SaveLoadService(new JsonSerializer(), new LocalDataRepository()));
 
         private void RegisterSceneSwitcher(DIContainer container)
             => container.RegisterAsSingle(c 

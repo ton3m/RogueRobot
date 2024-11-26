@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assets.CourseGame.Develop.DI
 {
-    public class DIContainer
+    public class DIContainer : IDisposable
     {
         private readonly Dictionary<Type, Registration> _container = new();
 
@@ -12,18 +12,30 @@ namespace Assets.CourseGame.Develop.DI
         private readonly List<Type> _requests = new();
 
         public DIContainer() : this(null)
-        { 
+        {
         }
 
         public DIContainer(DIContainer parent) => _parent = parent;
 
-        public void RegisterAsSingle<T>(Func<DIContainer, T> creator)
+        public Registration RegisterAsSingle<T>(Func<DIContainer, T> creator)
         {
-            if (_container.ContainsKey(typeof(T)))
+            if (IsAlreadyRegister<T>())
                 throw new InvalidOperationException($"{typeof(T)} already register");
 
             Registration registration = new Registration(container => creator(container));
             _container[typeof(T)] = registration;
+            return registration;
+        }
+
+        public bool IsAlreadyRegister<T>()
+        {
+            if (_container.ContainsKey(typeof(T)))
+                return true;
+
+            if(_parent != null)
+                return _parent.IsAlreadyRegister<T>();
+
+            return false;
         }
 
         public T Resolve<T>()
@@ -35,7 +47,7 @@ namespace Assets.CourseGame.Develop.DI
 
             try
             {
-                if(_container.TryGetValue(typeof(T), out Registration registration))
+                if (_container.TryGetValue(typeof(T), out Registration registration))
                     return CreateFrom<T>(registration);
 
                 if (_parent != null)
@@ -47,6 +59,29 @@ namespace Assets.CourseGame.Develop.DI
             }
 
             throw new InvalidOperationException($"Registration for {typeof(T)} not exist");
+        }
+
+        public void Initialize()
+        {
+            foreach (Registration registration in _container.Values)
+            {
+                if (registration.Instance == null && registration.IsNonLazy)
+                    registration.Instance = registration.Creator(this);
+
+                if (registration.Instance != null)
+                    if (registration.Instance is IInitializable initializable)
+                        initializable.Initialize();
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (Registration registration in _container.Values)
+            { 
+                if(registration.Instance != null)
+                    if(registration.Instance is IDisposable disposable)
+                        disposable.Dispose();
+            }
         }
 
         private T CreateFrom<T>(Registration registration)
@@ -61,10 +96,13 @@ namespace Assets.CourseGame.Develop.DI
         {
             public Func<DIContainer, object> Creator { get; }
             public object Instance { get; set; }
+            public bool IsNonLazy { get; private set; }
 
             public Registration(object instance) => Instance = instance;
 
             public Registration(Func<DIContainer, object> creator) => Creator = creator;
+
+            public void NonLazy() => IsNonLazy = true;
         }
     }
 }

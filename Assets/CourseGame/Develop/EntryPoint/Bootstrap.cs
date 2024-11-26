@@ -1,4 +1,6 @@
-﻿using Assets.CourseGame.Develop.CommonServices.LoadingScreen;
+﻿using Assets.CourseGame.Develop.CommonServices.ConfigsManagment;
+using Assets.CourseGame.Develop.CommonServices.DataManagment.DataProviders;
+using Assets.CourseGame.Develop.CommonServices.LoadingScreen;
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.DI;
 using System.Collections;
@@ -20,6 +22,9 @@ namespace Assets.CourseGame.Develop.EntryPoint
             Debug.Log("Начинается инициализация сервисов");
 
             //Инициализаций всех (подгрузка данных/конфигов/инит сервисов рекламы/аналитики и тп)
+
+            container.Resolve<ConfigsProviderService>().LoadAll();
+            container.Resolve<PlayerDataProvider>().Load();
 
             yield return new WaitForSeconds(1.5f);//инициализация какого-то процесса инициализация
 

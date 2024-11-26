@@ -25,6 +25,8 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
         private void ProcessRegistrations()
         {
             //Делаем регистрации для сцены геймплея
+
+            _container.Initialize();
         }
 
         private void Update()

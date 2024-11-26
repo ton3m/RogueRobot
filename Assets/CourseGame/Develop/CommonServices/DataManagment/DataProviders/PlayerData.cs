@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.CourseGame.Develop.CommonServices.Wallet;
+using System;
 using System.Collections.Generic;
 
 namespace Assets.CourseGame.Develop.CommonServices.DataManagment.DataProviders
@@ -6,7 +7,6 @@ namespace Assets.CourseGame.Develop.CommonServices.DataManagment.DataProviders
     [Serializable]
     public class PlayerData : ISaveData
     {
-        public int Money;
-        public List<int> CompletedLevels;
+        public Dictionary<CurrencyTypes, int> WalletData;
     }
 }

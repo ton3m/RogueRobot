@@ -3,6 +3,7 @@ using Assets.CourseGame.Develop.CommonServices.ConfigsManagment;
 using Assets.CourseGame.Develop.CommonServices.CoroutinePerfomer;
 using Assets.CourseGame.Develop.CommonServices.DataManagment;
 using Assets.CourseGame.Develop.CommonServices.DataManagment.DataProviders;
+using Assets.CourseGame.Develop.CommonServices.LevelsManagment;
 using Assets.CourseGame.Develop.CommonServices.LoadingScreen;
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.CommonServices.Wallet;
@@ -40,10 +41,15 @@ namespace Assets.CourseGame.Develop.EntryPoint
 
             RegisterConfigsProviderService(projectContainer);
 
+            RegisterCompletedLevelsService(projectContainer);
+
             projectContainer.Initialize();
             //все регистрации прошли
             projectContainer.Resolve<ICoroutinePerformer>().StartPerform(_gameBootstrap.Run(projectContainer));
         }
+
+        private void RegisterCompletedLevelsService(DIContainer container)
+            => container.RegisterAsSingle(c => new CompletedLevelsService(c.Resolve<PlayerDataProvider>())).NonLazy();
 
         private void SetupAppSettings()
         {

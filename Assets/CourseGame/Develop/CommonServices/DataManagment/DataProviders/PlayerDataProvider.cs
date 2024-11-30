@@ -21,7 +21,8 @@ namespace Assets.CourseGame.Develop.CommonServices.DataManagment.DataProviders
         {
             return new PlayerData()
             {
-                WalletData = InitWalletData()
+                WalletData = InitWalletData(),
+                CompletedLevels = new()
             };
         }
 

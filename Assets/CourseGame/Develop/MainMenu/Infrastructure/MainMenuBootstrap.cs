@@ -34,33 +34,14 @@ public class MainMenuBootstrap : MonoBehaviour
 
         _container
             .RegisterAsSingle(c => c.Resolve<WalletPresenterFactory>()
-            .CreateCurrencyPresenter(c.Resolve<MainMenuUIRoot>()._currencyView, CurrencyTypes.Gold))
+            .CreateWalletPresenter(c.Resolve<MainMenuUIRoot>().WalletView))
             .NonLazy();
 
         _container.Initialize();
     }
 
-    private CurrencyPresenter _currencyPresenter;
-
     private void Update()
     {
-        //Т.е. можем подключать презентер ко вью когда захотим и отключать когда захотим
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            _currencyPresenter?.Dispose();
-            MainMenuUIRoot mainMenuUIRoot = _container.Resolve<MainMenuUIRoot>();
-            _currencyPresenter = _container.Resolve<WalletPresenterFactory>().CreateCurrencyPresenter(mainMenuUIRoot._currencyView, CurrencyTypes.Gold);
-            _currencyPresenter.Initialize();
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            _currencyPresenter?.Dispose();
-            MainMenuUIRoot mainMenuUIRoot = _container.Resolve<MainMenuUIRoot>();
-            _currencyPresenter = _container.Resolve<WalletPresenterFactory>().CreateCurrencyPresenter(mainMenuUIRoot._currencyView, CurrencyTypes.Diamond);
-            _currencyPresenter.Initialize();
-        }
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _container.Resolve<SceneSwitcher>().ProcessSwitchSceneFor(new OutputMainMenuArgs(new GameplayInputArgs(2)));

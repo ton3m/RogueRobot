@@ -14,7 +14,7 @@ namespace Assets.CourseGame.Develop.CommonUI.Wallet
         private CurrencyIconsConfig _currencyIconsConfig;
 
         //визуал
-        private IconWithText _currencyView;
+        private IconWithText _view;
 
         public CurrencyPresenter(
             IReadOnlyVariable<int> currency,
@@ -24,14 +24,16 @@ namespace Assets.CourseGame.Develop.CommonUI.Wallet
         {
             _currency = currency;
             _currencyType = currencyType;
-            _currencyView = currencyView;
+            _view = currencyView;
             _currencyIconsConfig = currencyIconsConfig;
         }
+
+        public IconWithText View => _view;
 
         public void Initialize()
         {
             UpdateValue(_currency.Value);
-            _currencyView.SetIcon(_currencyIconsConfig.GetSpriteFor(_currencyType));
+            _view.SetIcon(_currencyIconsConfig.GetSpriteFor(_currencyType));
 
             _currency.Changed += OnCurrencyChanged;
         }
@@ -43,6 +45,6 @@ namespace Assets.CourseGame.Develop.CommonUI.Wallet
 
         private void OnCurrencyChanged(int arg1, int newValue) => UpdateValue(newValue);
 
-        private void UpdateValue(int value) => _currencyView.SetText(value.ToString());
+        private void UpdateValue(int value) => _view.SetText(value.ToString());
     }
 }

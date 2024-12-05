@@ -100,6 +100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5461315254263266067}
   - component: {fileID: 2549335377942317719}
+  - component: {fileID: 7096817674246855557}
   - component: {fileID: 3881627410742824945}
   - component: {fileID: 2196695196883254308}
   m_Layer: 5
@@ -137,6 +138,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4373182176911457576}
   m_CullTransparentMesh: 1
+--- !u!114 &7096817674246855557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4373182176911457576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02cafbcd712b5094cb238468cdd0c28e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _levelTileViewPrefab: {fileID: 7989642421776137475, guid: 25b10b67c08e4f946abf3cb27039184f,
+    type: 3}
+  _parent: {fileID: 8411149678368375752}
 --- !u!114 &3881627410742824945
 MonoBehaviour:
   m_ObjectHideFlags: 0

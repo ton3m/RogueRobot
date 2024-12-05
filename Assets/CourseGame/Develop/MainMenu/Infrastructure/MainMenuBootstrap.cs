@@ -4,6 +4,7 @@ using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.CommonServices.Wallet;
 using Assets.CourseGame.Develop.CommonUI.Wallet;
 using Assets.CourseGame.Develop.DI;
+using Assets.CourseGame.Develop.MainMenu.LevelsMenuFeature.LevelsMenuPopup;
 using Assets.CourseGame.Develop.MainMenu.UI;
 using System.Collections;
 using UnityEngine;
@@ -18,12 +19,25 @@ public class MainMenuBootstrap : MonoBehaviour
 
         ProcessRegistrations();
 
+        InitializeUI();
+
         yield return new WaitForSeconds(1f);
+    }
+
+    private void InitializeUI()
+    {
+        MainMenuUIRoot mainMenuUIRoot = _container.Resolve<MainMenuUIRoot>();
+        mainMenuUIRoot.OpenLevelsMenuButton.Initialize(() =>
+        {
+            LevelsMenuPopupPresenter levelsMenuPopupPresenter = _container.Resolve<LevelsMenuPopupFactory>().CreateLevelsMenuPopupPresenter();
+            levelsMenuPopupPresenter.Enable();
+        });
     }
 
     private void ProcessRegistrations()
     {
         //Делаем регистрации для сцены геймплея
+        _container.RegisterAsSingle(c => new LevelsMenuPopupFactory(c));
         _container.RegisterAsSingle(c => new WalletPresenterFactory(c));
 
         _container.RegisterAsSingle(c =>

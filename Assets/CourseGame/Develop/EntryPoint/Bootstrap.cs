@@ -34,7 +34,7 @@ namespace Assets.CourseGame.Develop.EntryPoint
 
             //переход на следующий сцену с помощью сервиса смены сцен
 
-            sceneSwitcher.ProcessSwitchSceneFor(new OutpurBootstrapArgs(new MainMenuInputArgs()));
+            sceneSwitcher.ProcessSwitchSceneFor(new OutpurBootstrapArgs(new GameplayInputArgs(1)));
         }
     }
 }

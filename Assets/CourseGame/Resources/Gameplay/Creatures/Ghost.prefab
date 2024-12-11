@@ -148,6 +148,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5554250321156709069}
   - component: {fileID: 3468963854522025343}
+  - component: {fileID: 6427028351134621923}
+  - component: {fileID: 8447095713409991126}
   - component: {fileID: 2655029179844040346}
   m_Layer: 0
   m_Name: Ghost
@@ -184,6 +186,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc05cff7fa1c3d147aba2bb87c262abf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6427028351134621923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8933024792284003759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66a082550ccc2cb489328ec03301fcb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transform: {fileID: 5554250321156709069}
+--- !u!114 &8447095713409991126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8933024792284003759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0e6c49db9493d347936f44ad24662c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterController: {fileID: 2655029179844040346}
 --- !u!143 &2655029179844040346
 CharacterController:
   m_ObjectHideFlags: 0

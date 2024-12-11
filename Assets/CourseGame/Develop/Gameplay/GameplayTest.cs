@@ -1,6 +1,5 @@
 ﻿using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.Entities;
-using Assets.CourseGame.Develop.Utils.Reactive;
 using UnityEngine;
 
 namespace Assets.CourseGame.Develop.Gameplay
@@ -17,8 +16,7 @@ namespace Assets.CourseGame.Develop.Gameplay
 
             _ghost = _container.Resolve<EntityFactory>().CreateGhost(Vector3.zero);
 
-            _ghost.TryGetValue(EntityValues.MoveSpeed, out ReactiveVariable<float> moveSpeed);
-            Debug.Log($"Скорость созданного призрака: {moveSpeed.Value}");
+            Debug.Log($"Скорость созданного призрака: {_ghost.GetMoveSpeed().Value}");
         }
 
         private void Update()
@@ -27,11 +25,8 @@ namespace Assets.CourseGame.Develop.Gameplay
 
             if(_ghost != null)
             {
-                _ghost.TryGetValue(EntityValues.MoveDirection, out ReactiveVariable<Vector3> moveDirection);
-                _ghost.TryGetValue(EntityValues.RotationDirection, out ReactiveVariable<Vector3> rotationDirection);
-
-                moveDirection.Value = input;
-                rotationDirection.Value = input;
+                _ghost.GetMoveDirection().Value = input;
+                _ghost.GetRotationDirection().Value = input;
             }
         }
     }

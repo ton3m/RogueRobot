@@ -26,12 +26,10 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
             Entity instance = Object.Instantiate(prefab, position, Quaternion.identity, null);
 
             instance
-                .AddValue(EntityValues.MoveDirection, new ReactiveVariable<Vector3>())
-                .AddValue(EntityValues.MoveSpeed, new ReactiveVariable<float>(10))
-                .AddValue(EntityValues.RotationDirection, new ReactiveVariable<Vector3>())
-                .AddValue(EntityValues.RotationSpeed, new ReactiveVariable<float>(900))
-                .AddValue(EntityValues.Transform, instance.GetComponent<Transform>())//пока делаем так, но позже улучшим решение
-                .AddValue(EntityValues.CharacterController, instance.GetComponent<CharacterController>());
+                .AddMoveDirection()
+                .AddMoveSpeed(new ReactiveVariable<float>(10))
+                .AddRotationDirection()
+                .AddRotationSpeed(new ReactiveVariable<float>(900));
 
             instance
                 .AddBehaviour(new CharacterControllerMovementBehaviour())

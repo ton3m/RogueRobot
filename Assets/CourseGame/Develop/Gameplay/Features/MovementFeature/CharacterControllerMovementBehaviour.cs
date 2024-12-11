@@ -14,9 +14,9 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.MovementFeature
 
         public void OnInit(Entity entity)
         {
-            _speed = entity.GetValue<ReactiveVariable<float>>(EntityValues.MoveSpeed);
-            _direction = entity.GetValue<ReactiveVariable<Vector3>>(EntityValues.MoveDirection);
-            _characterController = entity.GetValue<CharacterController>(EntityValues.CharacterController);
+            _speed = entity.GetMoveSpeed();
+            _direction = entity.GetMoveDirection();
+            _characterController = entity.GetCharacterController();
         }
 
         public void OnUpdate(float deltaTime)

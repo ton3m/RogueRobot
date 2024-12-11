@@ -17,6 +17,20 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
 
         private bool _isInit;
 
+        private void Awake()
+        {
+            Install();
+        }
+
+        private void Install()
+        {
+            MonoEntityRegistrator[] registrators = GetComponents<MonoEntityRegistrator>();
+
+            if (registrators != null)
+                foreach (MonoEntityRegistrator registrator in registrators)
+                    registrator.Register(this);
+        }
+
         public void Initialize()
         {
             foreach (IEntityInitialize initializable in _initializables)

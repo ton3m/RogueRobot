@@ -27,6 +27,12 @@ namespace Assets.CourseGame.Develop.Gameplay
             {
                 _ghost.GetMoveDirection().Value = input;
                 _ghost.GetRotationDirection().Value = input;
+
+                if(Input.GetKeyDown(KeyCode.F) && _ghost.TryGetTakeDamageRequest(out var takeDamageRequest))
+                {
+                    takeDamageRequest.Invoke(100);
+                    Debug.Log("Здоровье: " + _ghost.GetHealth().Value);
+                }
             }
         }
     }

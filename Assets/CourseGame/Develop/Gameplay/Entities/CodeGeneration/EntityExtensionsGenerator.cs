@@ -1,4 +1,5 @@
-﻿using Assets.CourseGame.Develop.Utils.Reactive;
+﻿using Assets.CourseGame.Develop.Utils.Conditions;
+using Assets.CourseGame.Develop.Utils.Reactive;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,12 +15,25 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities.CodeGeneration
         {
             {EntityValues.MoveDirection, typeof(ReactiveVariable<Vector3>) },
             {EntityValues.MoveSpeed, typeof(ReactiveVariable<float>) },
+            {EntityValues.MoveCondition, typeof(ICompositeCondition) },
 
             {EntityValues.RotationDirection, typeof(ReactiveVariable<Vector3>) },
             {EntityValues.RotationSpeed, typeof(ReactiveVariable<float>) },
+            {EntityValues.RotationCondition, typeof(ICompositeCondition) },
 
             {EntityValues.CharacterController, typeof(CharacterController)},
-            {EntityValues.Transform, typeof(Transform)}
+            {EntityValues.Transform, typeof(Transform)},
+
+            {EntityValues.Health, typeof(ReactiveVariable<float>) },
+            {EntityValues.MaxHealth, typeof(ReactiveVariable<float>) },
+
+            {EntityValues.TakeDamageRequest, typeof(ReactiveEvent<float>) },
+            {EntityValues.TakeDamageEvent, typeof(ReactiveEvent<float>) },
+            {EntityValues.TakeDamageCondition, typeof(ICompositeCondition) },
+
+            {EntityValues.IsDead, typeof(ReactiveVariable<bool>) },
+            {EntityValues.DeathCondition, typeof(ICompositeCondition) },
+            {EntityValues.SelfDestroyCondition, typeof(ICompositeCondition) },
         };
 
         [InitializeOnLoadMethod]

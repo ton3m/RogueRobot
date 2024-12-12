@@ -1,6 +1,9 @@
 ﻿using Assets.CourseGame.Develop.CommonServices.AssetsManagment;
 using Assets.CourseGame.Develop.DI;
+using Assets.CourseGame.Develop.Gameplay.Features.DamageFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.DeathFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.MovementFeature;
+using Assets.CourseGame.Develop.Utils.Conditions;
 using Assets.CourseGame.Develop.Utils.Reactive;
 using UnityEngine;
 
@@ -29,11 +32,42 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddMoveDirection()
                 .AddMoveSpeed(new ReactiveVariable<float>(10))
                 .AddRotationDirection()
-                .AddRotationSpeed(new ReactiveVariable<float>(900));
+                .AddRotationSpeed(new ReactiveVariable<float>(900))
+                .AddHealth(new ReactiveVariable<float>(400))
+                .AddMaxHealth(new ReactiveVariable<float>(400))
+                .AddTakeDamageRequest()
+                .AddTakeDamageEvent()
+                .AddIsDead();
+
+            ICompositeCondition deathCondition = new CompositeCondition(LogicOperations.AndOperation)
+                .Add(new FuncCondition(() => instance.GetHealth().Value <= 0));
+
+            ICompositeCondition takeDamageCondition = new CompositeCondition(LogicOperations.AndOperation)
+               .Add(new FuncCondition(() => instance.GetIsDead().Value == false));
+
+            ICompositeCondition moveCondition = new CompositeCondition(LogicOperations.AndOperation)
+                .Add(new FuncCondition(() => instance.GetIsDead().Value == false));
+
+            ICompositeCondition rotationCondition = new CompositeCondition(LogicOperations.AndOperation)
+                .Add(new FuncCondition(() => instance.GetIsDead().Value == false));
+
+            ICompositeCondition selfDestroyCondition = new CompositeCondition(LogicOperations.AndOperation)
+                .Add(new FuncCondition(() => instance.GetIsDead().Value));
 
             instance
+                .AddMoveCondition(moveCondition)
+                .AddRotationCondition(rotationCondition)
+                .AddDeathCondition(deathCondition)
+                .AddTakeDamageCondition(takeDamageCondition)
+                .AddSelfDestroyCondition(selfDestroyCondition);
+ 
+            instance
                 .AddBehaviour(new CharacterControllerMovementBehaviour())
-                .AddBehaviour(new RotationBehaviour());
+                .AddBehaviour(new RotationBehaviour())
+                .AddBehaviour(new ApplyDamageFilterBehaviour())
+                .AddBehaviour(new ApplyDamageBehaviour())
+                .AddBehaviour(new DeathBehaviour())
+                .AddBehaviour(new SelfDestroyBehaviour());
 
             instance.Initialize();
 

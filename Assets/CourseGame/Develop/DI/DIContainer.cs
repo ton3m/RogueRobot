@@ -22,7 +22,7 @@ namespace Assets.CourseGame.Develop.DI
             if (IsAlreadyRegister<T>())
                 throw new InvalidOperationException($"{typeof(T)} already register");
 
-            Registration registration = new Registration(container => creator(container));
+            Registration registration = new Registration(container => creator.Invoke(container));
             _container[typeof(T)] = registration;
             return registration;
         }
@@ -87,7 +87,7 @@ namespace Assets.CourseGame.Develop.DI
         private T CreateFrom<T>(Registration registration)
         {
             if (registration.Instance == null && registration.Creator != null)
-                registration.Instance = registration.Creator(this);
+                registration.Instance = registration.Creator.Invoke(this);
 
             return (T)registration.Instance;
         }

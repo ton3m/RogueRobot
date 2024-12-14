@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assets.CourseGame.Develop.Utils.Reactive
 {
-    public class ReactiveEvent
+    public class ReactiveEvent : IReadOnlyEvent
     {
         private List<ActionNode> _subscribers = new();
 
@@ -24,22 +24,7 @@ namespace Assets.CourseGame.Develop.Utils.Reactive
             => _subscribers.Remove(actionNode); 
     }
 
-    public class ActionNode : IDisposable
-    {
-        private Action _action;
-        private Action<ActionNode> _onDispose;
-
-        public ActionNode(Action action, Action<ActionNode> onDispose)
-        {
-            _action = action;
-            _onDispose = onDispose;
-        }
-
-        public void Invoke() => _action?.Invoke();
-        public void Dispose() => _onDispose?.Invoke(this);
-    }
-
-    public class ReactiveEvent<T>
+    public class ReactiveEvent<T> : IReadOnlyEvent<T>
     {
         private List<ActionNode<T>> _subscribers = new();
 
@@ -58,20 +43,5 @@ namespace Assets.CourseGame.Develop.Utils.Reactive
 
         private void Remove(ActionNode<T> actionNode)
             => _subscribers.Remove(actionNode);
-    }
-
-    public class ActionNode<T> : IDisposable
-    {
-        private Action<T> _action;
-        private Action<ActionNode<T>> _onDispose;
-
-        public ActionNode(Action<T> action, Action<ActionNode<T>> onDispose)
-        {
-            _action = action;
-            _onDispose = onDispose;
-        }
-
-        public void Invoke(T arg) => _action?.Invoke(arg);
-        public void Dispose() => _onDispose?.Invoke(this);
     }
 }

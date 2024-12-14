@@ -5,11 +5,15 @@
         MoveDirection,
         MoveSpeed,
         MoveCondition,
+        IsMoving,
 
         RotationDirection,
         RotationSpeed,
         RotationCondition,
         
+        SelfTriggerReciever,
+        SelfTriggerDamage,
+
         CharacterController,
         Transform,
 
@@ -21,6 +25,7 @@
         TakeDamageCondition,
 
         IsDead,
+        IsDeathProcess,
         DeathCondition,
         SelfDestroyCondition,
     }

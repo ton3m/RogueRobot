@@ -31,13 +31,16 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
             instance
                 .AddMoveDirection()
                 .AddMoveSpeed(new ReactiveVariable<float>(10))
+                .AddIsMoving()
                 .AddRotationDirection()
                 .AddRotationSpeed(new ReactiveVariable<float>(900))
-                .AddHealth(new ReactiveVariable<float>(400))
-                .AddMaxHealth(new ReactiveVariable<float>(400))
+                .AddHealth(new ReactiveVariable<float>(800))
+                .AddMaxHealth(new ReactiveVariable<float>(800))
                 .AddTakeDamageRequest()
                 .AddTakeDamageEvent()
-                .AddIsDead();
+                .AddIsDead()
+                .AddIsDeathProcess()
+                .AddSelfTriggerDamage(new ReactiveVariable<float>(150));
 
             ICompositeCondition deathCondition = new CompositeCondition(LogicOperations.AndOperation)
                 .Add(new FuncCondition(() => instance.GetHealth().Value <= 0));
@@ -52,7 +55,8 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .Add(new FuncCondition(() => instance.GetIsDead().Value == false));
 
             ICompositeCondition selfDestroyCondition = new CompositeCondition(LogicOperations.AndOperation)
-                .Add(new FuncCondition(() => instance.GetIsDead().Value));
+                .Add(new FuncCondition(() => instance.GetIsDead().Value))
+                .Add(new FuncCondition(() => instance.GetIsDeathProcess().Value == false));
 
             instance
                 .AddMoveCondition(moveCondition)
@@ -66,6 +70,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddBehaviour(new RotationBehaviour())
                 .AddBehaviour(new ApplyDamageFilterBehaviour())
                 .AddBehaviour(new ApplyDamageBehaviour())
+                .AddBehaviour(new DealDamageOnSelfTriggerBehaviour())
                 .AddBehaviour(new DeathBehaviour())
                 .AddBehaviour(new SelfDestroyBehaviour());
 

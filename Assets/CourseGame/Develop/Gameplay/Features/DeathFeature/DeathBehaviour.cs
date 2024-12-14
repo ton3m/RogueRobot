@@ -10,11 +10,13 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.DeathFeature
     {
         private ICondition _condition;
         private ReactiveVariable<bool> _isDead;
+        private ReactiveVariable<bool> _isDeathProcess;
 
         public void OnInit(Entity entity)
         {
             _isDead = entity.GetIsDead();
             _condition = entity.GetDeathCondition();
+            _isDeathProcess = entity.GetIsDeathProcess();
         }
 
         public void OnUpdate(float deltaTime)
@@ -25,7 +27,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.DeathFeature
             if(_condition.Evaluate())
             {
                 _isDead.Value = true;
-                Debug.Log("Я умер!");
+                _isDeathProcess.Value = true;
             }
         }
     }

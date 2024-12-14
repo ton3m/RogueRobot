@@ -12,6 +12,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.MovementFeature
 
         private IReadOnlyVariable<float> _speed;
         private IReadOnlyVariable<Vector3> _direction;
+        private ReactiveVariable<bool> _isMoving;
 
         private ICondition _condition;
 
@@ -21,14 +22,20 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.MovementFeature
             _direction = entity.GetMoveDirection();
             _characterController = entity.GetCharacterController();
             _condition = entity.GetMoveCondition();
+            _isMoving = entity.GetIsMoving();
         }
 
         public void OnUpdate(float deltaTime)
         {
             if (_condition.Evaluate() == false)
+            {
+                _isMoving.Value = false;
                 return;
+            }
 
             Vector3 velocity = _direction.Value.normalized * _speed.Value;
+
+            _isMoving.Value = velocity.magnitude > 0;
 
             _characterController.Move(velocity * deltaTime);
         }

@@ -15,6 +15,7 @@ namespace Assets.CourseGame.Develop.Gameplay
             _container = container;
 
             _ghost = _container.Resolve<EntityFactory>().CreateGhost(Vector3.zero);
+            _container.Resolve<EntityFactory>().CreateGhost(Vector3.zero + Vector3.forward * 4);
 
             Debug.Log($"Скорость созданного призрака: {_ghost.GetMoveSpeed().Value}");
         }

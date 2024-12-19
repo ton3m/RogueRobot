@@ -16,6 +16,20 @@
 
         CharacterController,
         Transform,
+        Rigidbody,
+        ShootPoint,
+
+        AttackTrigger,
+        AttackCondition,
+        IsAttackProcess,
+        AttackCanceledCondition,
+
+        InstantAttackEvent,
+
+        IntervalBetweenAttacks,
+        AttackCooldown,
+
+        Damage,
 
         Health,
         MaxHealth,

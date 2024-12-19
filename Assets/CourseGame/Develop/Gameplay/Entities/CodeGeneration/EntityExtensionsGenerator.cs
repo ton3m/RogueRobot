@@ -28,6 +28,20 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities.CodeGeneration
 
             {EntityValues.CharacterController, typeof(CharacterController)},
             {EntityValues.Transform, typeof(Transform)},
+            {EntityValues.Rigidbody, typeof(Rigidbody)},
+            {EntityValues.ShootPoint, typeof(Transform)},
+
+            {EntityValues.AttackTrigger, typeof(ReactiveEvent)},
+            {EntityValues.AttackCondition, typeof(ICompositeCondition)},
+            {EntityValues.IsAttackProcess, typeof(ReactiveVariable<bool>)},
+            {EntityValues.AttackCanceledCondition, typeof(ICompositeCondition)},
+
+            {EntityValues.InstantAttackEvent, typeof(ReactiveEvent)},
+
+            {EntityValues.IntervalBetweenAttacks, typeof(ReactiveVariable<float>)},
+            {EntityValues.AttackCooldown, typeof(ReactiveVariable<float>)},
+
+            {EntityValues.Damage, typeof(ReactiveVariable<float>)},
 
             {EntityValues.Health, typeof(ReactiveVariable<float>) },
             {EntityValues.MaxHealth, typeof(ReactiveVariable<float>) },

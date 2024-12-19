@@ -1,6 +1,7 @@
 ﻿using Assets.CourseGame.Develop.Gameplay.Entities.Behaviours;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.CourseGame.Develop.Gameplay.Entities
@@ -114,6 +115,21 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 _disposeables.Add(disposable);
 
             return this;
+        }
+
+        public bool TryRemoveBehaviour<T>() where T : IEntityBehaviour
+        {
+            IEntityBehaviour entityBehaviour = _behaviours.FirstOrDefault(beh => beh is T);
+
+            if (entityBehaviour == null)
+                return false;
+
+            _behaviours.Remove(entityBehaviour);
+
+            if (entityBehaviour is IEntityDispose disposable)
+                disposable.OnDispose();
+
+            return true;
         }
     }
 }

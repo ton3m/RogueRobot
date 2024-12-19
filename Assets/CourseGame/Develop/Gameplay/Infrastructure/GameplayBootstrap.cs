@@ -1,5 +1,6 @@
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.DI;
+using Assets.CourseGame.Develop.Gameplay.AI;
 using Assets.CourseGame.Develop.Gameplay.Entities;
 using System.Collections;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
         {
             //Делаем регистрации для сцены геймплея
             _container.RegisterAsSingle(c => new EntityFactory(c));
+            _container.RegisterAsSingle(c => new AIFactory(c));
 
             _container.Initialize();
         }

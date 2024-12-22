@@ -2,6 +2,9 @@ using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.AI;
 using Assets.CourseGame.Develop.Gameplay.Entities;
+using Assets.CourseGame.Develop.Gameplay.Features.EnemiesFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.InputFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.MainHeroFeature;
 using System.Collections;
 using UnityEngine;
 
@@ -31,8 +34,15 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
         private void ProcessRegistrations()
         {
             //Делаем регистрации для сцены геймплея
+
+            _container.RegisterAsSingle<IInputService>(c => new DesktopInput());
+
+            _container.RegisterAsSingle(c => new EntitiesBuffer());
+
             _container.RegisterAsSingle(c => new EntityFactory(c));
             _container.RegisterAsSingle(c => new AIFactory(c));
+            _container.RegisterAsSingle(c => new EnemyFactory(c));
+            _container.RegisterAsSingle(c => new MainHeroFactory(c));
 
             _container.Initialize();
         }

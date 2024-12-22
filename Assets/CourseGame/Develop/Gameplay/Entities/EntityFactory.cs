@@ -3,6 +3,7 @@ using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.Features.AttackFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DamageFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DeathFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.DetecteBufferFeautre;
 using Assets.CourseGame.Develop.Gameplay.Features.MovementFeature;
 using Assets.CourseGame.Develop.Utils.Conditions;
 using Assets.CourseGame.Develop.Utils.Reactive;
@@ -17,14 +18,16 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
 
         private DIContainer _container;
         private ResourcesAssetLoader _assets;
+        private EntitiesBuffer _entitiesBuffer;
 
         public EntityFactory(DIContainer container)
         {
             _container = container;
             _assets = container.Resolve<ResourcesAssetLoader>();
+            _entitiesBuffer = container.Resolve<EntitiesBuffer>();
         }
 
-        public Entity CreateMainHero(Vector3 position)
+        public Entity CreateMainHero(Vector3 position, int team)
         {
             Entity prefab = _assets.LoadResource<Entity>(MainHeroPrefabPath);
 
@@ -43,11 +46,13 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddAttackCooldown()
                 .AddTakeDamageRequest()
                 .AddTakeDamageEvent()
+                .AddDetectedEntitiesBuffer()
                 .AddAttackTrigger()
                 .AddIsAttackProcess()
                 .AddInstantAttackEvent()
                 .AddIsDead()
-                .AddIsDeathProcess();
+                .AddIsDeathProcess()
+                .AddTeam(new ReactiveVariable<int>(team));
 
             ICompositeCondition attackCondition = new CompositeCondition(LogicOperations.AndOperation)
                 .Add(new FuncCondition(() => instance.GetIsDead().Value == false))
@@ -85,6 +90,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddAttackCondition(attackCondition);
 
             instance
+                .AddBehaviour(new UpdateEntityBufferFromCreaturesBuffer(_entitiesBuffer))
                 .AddBehaviour(new CharacterControllerMovementBehaviour())
                 .AddBehaviour(new RotationBehaviour())
                 .AddBehaviour(new ApplyDamageFilterBehaviour())
@@ -103,7 +109,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
             return instance;
         }
 
-        public Entity CreateGhost(Vector3 position)
+        public Entity CreateGhost(Vector3 position, int team)
         {
             Entity prefab = _assets.LoadResource<Entity>(GhostPrefabPath);
 
@@ -121,7 +127,8 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddTakeDamageEvent()
                 .AddIsDead()
                 .AddIsDeathProcess()
-                .AddSelfTriggerDamage(new ReactiveVariable<float>(150));
+                .AddSelfTriggerDamage(new ReactiveVariable<float>(150))
+                .AddTeam(new ReactiveVariable<int>(team));
 
             ICompositeCondition deathCondition = new CompositeCondition(LogicOperations.AndOperation)
                 .Add(new FuncCondition(() => instance.GetHealth().Value <= 0));
@@ -192,6 +199,8 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddBehaviour(new ForceRotationBehaviour());
 
             instance.Initialize();
+
+            _entitiesBuffer.Add(instance);
 
             return instance;
         }

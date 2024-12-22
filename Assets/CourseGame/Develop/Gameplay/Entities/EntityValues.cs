@@ -31,6 +31,8 @@
 
         Damage,
 
+        DetectedEntitiesBuffer,
+
         Health,
         MaxHealth,
 
@@ -42,5 +44,7 @@
         IsDeathProcess,
         DeathCondition,
         SelfDestroyCondition,
+
+        Team
     }
 }

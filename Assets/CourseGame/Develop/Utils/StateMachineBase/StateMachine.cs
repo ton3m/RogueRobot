@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Assets.CourseGame.Develop.Utils.StateMachineBase
 {
-    public abstract class StateMachine<TState> : IDisposable where TState : class, IState
+    public abstract class StateMachine<TState> : State, IUpdatableState, IDisposable where TState : class, IState
     {
         private List<StateNode<TState>> _states = new();
 
@@ -18,7 +18,10 @@ namespace Assets.CourseGame.Develop.Utils.StateMachineBase
         protected StateMachine(List<IDisposable> disposables = null)
         {
             if (disposables == null)
+            {
+                _disposables = new List<IDisposable>();
                 return;
+            }
 
             _disposables = new List<IDisposable>(disposables);
         }
@@ -35,16 +38,20 @@ namespace Assets.CourseGame.Develop.Utils.StateMachineBase
 
         protected StateNode<TState> CurrentState => _currentState;
 
-        public void Enter()
+        public override void Enter()
         {
+            base.Enter();
+
             if (_currentState == null)
                 SwitchState(_states[0]);
 
             _isRunning = true;
         }
 
-        public void Exit()
+        public override void Exit()
         {
+            base.Exit();
+
             _currentState?.State.Exit();
 
             _isRunning = false;

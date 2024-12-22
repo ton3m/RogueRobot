@@ -126,8 +126,17 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
 
             _behaviours.Remove(entityBehaviour);
 
+            if (entityBehaviour is IEntityUpdate updatable)
+                _updatables.Remove(updatable);
+
+            if (entityBehaviour is IEntityInitialize initializable)
+                _initializables.Remove(initializable);
+
             if (entityBehaviour is IEntityDispose disposable)
+            {
                 disposable.OnDispose();
+                _disposeables.Remove(disposable);
+            }
 
             return true;
         }

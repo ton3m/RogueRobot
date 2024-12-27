@@ -1,6 +1,9 @@
 ﻿using Assets.CourseGame.Develop.CommonServices.AssetsManagment;
 using Assets.CourseGame.Develop.Configs.Common.Wallet;
 using Assets.CourseGame.Develop.Configs.Gameplay;
+using Assets.CourseGame.Develop.Configs.Gameplay.Abilities;
+using Assets.CourseGame.Develop.Configs.Gameplay.Creatures;
+using System;
 
 namespace Assets.CourseGame.Develop.CommonServices.ConfigsManagment
 {
@@ -15,9 +18,13 @@ namespace Assets.CourseGame.Develop.CommonServices.ConfigsManagment
 
         public StartWalletConfig StartWalletConfig { get; private set; }
 
+        public AbilitiesConfigsContainer AbilitiesConfigsContaier { get; private set; }
+
         public CurrencyIconsConfig CurrencyIconsConfig { get; private set; }
 
-        public LevelListConfig LevelsListConfig { get; private set; }   
+        public LevelListConfig LevelsListConfig { get; private set; }  
+        
+        public MainHeroConfig MainHeroConfig { get; private set; }
 
         public void LoadAll()
         {
@@ -25,7 +32,15 @@ namespace Assets.CourseGame.Develop.CommonServices.ConfigsManagment
             LoadStartWalletConfig();
             LoadCurrencyIconsConfig();
             LoadLevelsListConfig();
+            LoadMainHeroConfig();
+            LoadAbilitiesConfigsContaier();
         }
+
+        private void LoadAbilitiesConfigsContaier()
+            => AbilitiesConfigsContaier = _resourcesAssetLoader.LoadResource<AbilitiesConfigsContainer>("Configs/Gameplay/Abilities/AbilitiesConfigsContainer");
+
+        private void LoadMainHeroConfig()
+            => MainHeroConfig = _resourcesAssetLoader.LoadResource<MainHeroConfig>("Configs/Gameplay/Creatures/MainHeroConfig");
 
         private void LoadStartWalletConfig()
             => StartWalletConfig = _resourcesAssetLoader.LoadResource<StartWalletConfig>("Configs/Common/Wallet/StartWalletConfig");

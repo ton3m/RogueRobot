@@ -1,12 +1,15 @@
 ﻿using Assets.CourseGame.Develop.CommonServices.AssetsManagment;
+using Assets.CourseGame.Develop.Configs.Gameplay.Creatures;
 using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.Features.AttackFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DamageFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DeathFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DetecteBufferFeautre;
 using Assets.CourseGame.Develop.Gameplay.Features.MovementFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.StatsFeature;
 using Assets.CourseGame.Develop.Utils.Conditions;
 using Assets.CourseGame.Develop.Utils.Reactive;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.CourseGame.Develop.Gameplay.Entities
@@ -27,22 +30,38 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
             _entitiesBuffer = container.Resolve<EntitiesBuffer>();
         }
 
-        public Entity CreateMainHero(Vector3 position, int team)
+        public Entity CreateMainHero(Vector3 position, MainHeroConfig config, int team)
         {
             Entity prefab = _assets.LoadResource<Entity>(MainHeroPrefabPath);
 
             Entity instance = Object.Instantiate(prefab, position, Quaternion.identity, null);
 
+            Dictionary<StatTypes, float> baseStats = new Dictionary<StatTypes, float>()
+            {
+                {StatTypes.MoveSpeed, config.MoveSpeed},
+                {StatTypes.AttackInterval, config.AttackInterval},
+                {StatTypes.MaxHealth, config.MaxHealth},
+                {StatTypes.Damage, config.Damage},
+            };
+
+            Dictionary<StatTypes, float> modifiedStats = new Dictionary<StatTypes, float>(baseStats);
+
+            //StatsEffectsList statsEffectsList = new StatsEffectsList();
+            //statsEffectsList.Add(new StatsEffect(StatTypes.MoveSpeed, stat => stat *= 0.3f));
+
             instance
+                .AddStatsEffectsList()
+                .AddBaseStats(baseStats)
+                .AddModifiedStats(modifiedStats)
                 .AddMoveDirection()
-                .AddMoveSpeed(new ReactiveVariable<float>(10))
+                .AddMoveSpeed(new ReactiveVariable<float>(baseStats[StatTypes.MoveSpeed]))
                 .AddIsMoving()
                 .AddRotationDirection()
-                .AddRotationSpeed(new ReactiveVariable<float>(900))
-                .AddHealth(new ReactiveVariable<float>(800))
-                .AddMaxHealth(new ReactiveVariable<float>(800))
-                .AddDamage(new ReactiveVariable<float>(100))
-                .AddIntervalBetweenAttacks(new ReactiveVariable<float>(4f))
+                .AddRotationSpeed(new ReactiveVariable<float>(config.RotationSpeed))
+                .AddHealth(new ReactiveVariable<float>(baseStats[StatTypes.MaxHealth]))
+                .AddMaxHealth(new ReactiveVariable<float>(baseStats[StatTypes.MaxHealth]))
+                .AddDamage(new ReactiveVariable<float>(baseStats[StatTypes.Damage]))
+                .AddIntervalBetweenAttacks(new ReactiveVariable<float>(baseStats[StatTypes.AttackInterval]))
                 .AddAttackCooldown()
                 .AddTakeDamageRequest()
                 .AddTakeDamageEvent()
@@ -90,6 +109,11 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddAttackCondition(attackCondition);
 
             instance
+                .AddBehaviour(new StatEffectsApplierBehaviour())
+                .AddBehaviour(new MoveSpeedModifierApplierBehaviour())
+                .AddBehaviour(new DamageModifierApplierBehaviour())
+                .AddBehaviour(new MaxHealthModifierApplierBehaviour())
+                .AddBehaviour(new AttackIntervalModifierApplierBehaviour())
                 .AddBehaviour(new UpdateEntityBufferFromCreaturesBuffer(_entitiesBuffer))
                 .AddBehaviour(new CharacterControllerMovementBehaviour())
                 .AddBehaviour(new RotationBehaviour())
@@ -109,7 +133,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
             return instance;
         }
 
-        public Entity CreateGhost(Vector3 position, int team)
+        public Entity CreateGhost(Vector3 position, GhostConfig config, int team)
         {
             Entity prefab = _assets.LoadResource<Entity>(GhostPrefabPath);
 
@@ -117,17 +141,17 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
 
             instance
                 .AddMoveDirection()
-                .AddMoveSpeed(new ReactiveVariable<float>(10))
+                .AddMoveSpeed(new ReactiveVariable<float>(config.MoveSpeed))
                 .AddIsMoving()
                 .AddRotationDirection()
-                .AddRotationSpeed(new ReactiveVariable<float>(900))
-                .AddHealth(new ReactiveVariable<float>(800))
-                .AddMaxHealth(new ReactiveVariable<float>(800))
+                .AddRotationSpeed(new ReactiveVariable<float>(config.RotationSpeed))
+                .AddHealth(new ReactiveVariable<float>(config.MaxHealth))
+                .AddMaxHealth(new ReactiveVariable<float>(config.MaxHealth))
                 .AddTakeDamageRequest()
                 .AddTakeDamageEvent()
                 .AddIsDead()
                 .AddIsDeathProcess()
-                .AddSelfTriggerDamage(new ReactiveVariable<float>(150))
+                .AddSelfTriggerDamage(new ReactiveVariable<float>(config.SelfTriggerDamage))
                 .AddTeam(new ReactiveVariable<int>(team));
 
             ICompositeCondition deathCondition = new CompositeCondition(LogicOperations.AndOperation)
@@ -197,6 +221,23 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
             instance
                 .AddBehaviour(new RigidbodyMovementBehaviour())
                 .AddBehaviour(new ForceRotationBehaviour());
+
+            instance.Initialize();
+
+            _entitiesBuffer.Add(instance);
+
+            return instance;
+        }
+
+        // Геймплейные штучки
+
+        private const string NextStageTriggerPrefabPath = "Gameplay/NextGameplayStageTrigger";
+
+        public Entity CreateNextGameplayStageTrigger(Vector3 position)
+        {
+            Entity prefab = _assets.LoadResource<Entity>(NextStageTriggerPrefabPath);
+
+            Entity instance = Object.Instantiate(prefab, position, Quaternion.identity, null);
 
             instance.Initialize();
 

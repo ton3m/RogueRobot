@@ -45,6 +45,14 @@
         DeathCondition,
         SelfDestroyCondition,
 
-        Team
+        Team,
+
+        IsMainHero,
+
+        AbilityList,
+
+        BaseStats,
+        ModifiedStats,
+        StatsEffectsList,
     }
 }

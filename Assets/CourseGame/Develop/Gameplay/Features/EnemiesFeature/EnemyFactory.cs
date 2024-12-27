@@ -1,7 +1,9 @@
-﻿using Assets.CourseGame.Develop.DI;
+﻿using Assets.CourseGame.Develop.Configs.Gameplay.Creatures;
+using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.AI;
 using Assets.CourseGame.Develop.Gameplay.Entities;
 using Assets.CourseGame.Develop.Gameplay.Features.TeamFeature;
+using System;
 using UnityEngine;
 
 namespace Assets.CourseGame.Develop.Gameplay.Features.EnemiesFeature
@@ -21,10 +23,21 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.EnemiesFeature
             _eneitiesBuffer = container.Resolve<EntitiesBuffer>();
         }
 
-        public Entity CreateGhost(Vector3 position)
+        public Entity Create(Vector3 position, CreatureConfig config)
         {
-            Entity entity = _entityFactory.CreateGhost(position, _team);
-            AIStateMachine brain = _aiFactory.CreateGhostBehaviour(entity);
+            Entity entity;
+            AIStateMachine brain;
+
+            switch (config)
+            {
+                case GhostConfig ghostConfig:
+                    entity = _entityFactory.CreateGhost(position, ghostConfig, _team);
+                    brain = _aiFactory.CreateGhostBehaviour(entity);
+                    break;
+
+                default:
+                    throw new ArgumentException("Не поддерживается такой конфиг для создания врага");
+            }
 
             entity.AddBehaviour(new StateMachineBrainBehaviour(brain));
 

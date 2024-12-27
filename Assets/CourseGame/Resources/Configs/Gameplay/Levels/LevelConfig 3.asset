@@ -12,3 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e47a16568325f44f98ffc9477891035, type: 3}
   m_Name: LevelConfig 3
   m_EditorClassIdentifier: 
+  _waveConfigs:
+  - _waveItems:
+    - <SpawnPosition>k__BackingField: {x: 0, y: 0, z: 3}
+      <EnemyConfig>k__BackingField: {fileID: 11400000, guid: fb735dcb19f29c84b9bb3899a55dd99a,
+        type: 2}
+  - _waveItems:
+    - <SpawnPosition>k__BackingField: {x: 0, y: 0, z: 3}
+      <EnemyConfig>k__BackingField: {fileID: 11400000, guid: fb735dcb19f29c84b9bb3899a55dd99a,
+        type: 2}
+    - <SpawnPosition>k__BackingField: {x: -3, y: 0, z: 3}
+      <EnemyConfig>k__BackingField: {fileID: 11400000, guid: fb735dcb19f29c84b9bb3899a55dd99a,
+        type: 2}
+    - <SpawnPosition>k__BackingField: {x: 3, y: 0, z: 3}
+      <EnemyConfig>k__BackingField: {fileID: 11400000, guid: fb735dcb19f29c84b9bb3899a55dd99a,
+        type: 2}
+  - _waveItems:
+    - <SpawnPosition>k__BackingField: {x: 0, y: 0, z: 3}
+      <EnemyConfig>k__BackingField: {fileID: 11400000, guid: fb735dcb19f29c84b9bb3899a55dd99a,
+        type: 2}
+    - <SpawnPosition>k__BackingField: {x: -3, y: 0, z: 3}
+      <EnemyConfig>k__BackingField: {fileID: 11400000, guid: fb735dcb19f29c84b9bb3899a55dd99a,
+        type: 2}
+    - <SpawnPosition>k__BackingField: {x: 3, y: 0, z: 3}
+      <EnemyConfig>k__BackingField: {fileID: 11400000, guid: fb735dcb19f29c84b9bb3899a55dd99a,
+        type: 2}
+    - <SpawnPosition>k__BackingField: {x: 0, y: 0, z: 4}
+      <EnemyConfig>k__BackingField: {fileID: 11400000, guid: fb735dcb19f29c84b9bb3899a55dd99a,
+        type: 2}

@@ -15,7 +15,8 @@ MonoBehaviour:
   <ID>k__BackingField: MoveSpeed1
   <Name>k__BackingField: Speed+
   <Description>k__BackingField: Medium increase speed
-  <Icon>k__BackingField: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  <Icon>k__BackingField: {fileID: 21300000, guid: 3929d7bae357e461184c8564c736fca0,
+    type: 3}
   <StatType>k__BackingField: 1
   _operation: 0
   _value: 1.4

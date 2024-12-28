@@ -1,17 +1,22 @@
+using Assets.CourseGame.Develop.CommonServices.AssetsManagment;
 using Assets.CourseGame.Develop.CommonServices.ConfigsManagment;
+using Assets.CourseGame.Develop.CommonServices.CoroutinePerfomer;
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.AI;
 using Assets.CourseGame.Develop.Gameplay.Entities;
 using Assets.CourseGame.Develop.Gameplay.Features.AbilitiesFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.AbilitiesFeature.AbilityDropServiceFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.AbilitiesFeature.Presenters;
 using Assets.CourseGame.Develop.Gameplay.Features.EnemiesFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.GameModeStagesFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.InputFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.LevelUPFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.MainHeroFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.PauseFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.TeamFeature;
 using Assets.CourseGame.Develop.Gameplay.States;
+using Assets.CourseGame.Develop.Gameplay.UI;
 using Assets.CourseGame.Develop.Utils.Conditions;
 using System;
 using System.Collections;
@@ -56,6 +61,10 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
             _container.RegisterAsSingle(c => new EnemyFactory(c));
 
             _container.RegisterAsSingle(c => new AbilityFactory(c));
+            _container.RegisterAsSingle(c => new AbilityPresentersFactory(c));
+            _container.RegisterAsSingle(c => new DropAbilityOnMainHeroLevelUpService(
+                c.Resolve<MainHeroHolderService>(), c.Resolve<AbilityPresentersFactory>(),
+                c.Resolve<IPauseService>(),c.Resolve<ICoroutinePerformer>())).NonLazy();
             _container.RegisterAsSingle(c => new AbilityDropService(
                 c.Resolve<ConfigsProviderService>().LevelsListConfig.GetBy(gameplayInputArgs.LevelNumber).AbilityDropOptions,
                 new AbilityDropingRules()));
@@ -72,6 +81,12 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
             _container.RegisterAsSingle(c => new GameplayStateMachineDisposer());
             _container.RegisterAsSingle(c => new GameplayStatesFactory(c));
             _container.RegisterAsSingle(c => new GameplayFinishConditionService());
+
+            _container.RegisterAsSingle(c =>
+            {
+                GameplayUIRoot gameplayUIRootPrefab = c.Resolve<ResourcesAssetLoader>().LoadResource<GameplayUIRoot>("Gameplay/UI/GameplayUIRoot");
+                return Instantiate(gameplayUIRootPrefab);
+            }).NonLazy();
 
             _container.Initialize();
         }
@@ -118,6 +133,8 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
             return gameplayStateMachine;
         }
 
+        private AbilitySelectPopupPresenter _popup;
+
         private void Update()
         {
             _gameplayStateMachine?.Update(Time.deltaTime);
@@ -132,6 +149,28 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
                             takeDamageRequest.Invoke(99999);
                     }
                 }
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                _container.Resolve<MainHeroHolderService>().MainHero.GetExperience().Value += 150;
+            }
+
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                _container.Resolve<IPauseService>().Pause();
+                _popup = _container.Resolve<AbilityPresentersFactory>().CreateAbilitySelectPopupPresenter(_container.Resolve<MainHeroHolderService>().MainHero);
+                _popup.Enable();
+            }
+
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                _popup.Disable(() => _container.Resolve<IPauseService>().Unpause());
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _container.Resolve<MainHeroHolderService>().MainHero.GetInstantAttackEvent().Invoke();
             }
         }
     }

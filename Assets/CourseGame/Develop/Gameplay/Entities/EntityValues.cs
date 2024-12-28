@@ -25,6 +25,7 @@
         AttackCanceledCondition,
 
         InstantAttackEvent,
+        InstanShootingDirections,
 
         IntervalBetweenAttacks,
         AttackCooldown,
@@ -54,5 +55,8 @@
         BaseStats,
         ModifiedStats,
         StatsEffectsList,
+
+        Experience,
+        Level,
     }
 }

@@ -260,6 +260,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8173908322245746690}
   - component: {fileID: 8561296040919772488}
+  - component: {fileID: 7739066003450363149}
   m_Layer: 5
   m_Name: SelectionAbilityPopup
   m_TagString: Untagged
@@ -300,6 +301,22 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &7739066003450363149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4802783157908929828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10cb0de80ab11c94f9f2b87656771d04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvasGroup: {fileID: 8561296040919772488}
+  _title: {fileID: 631093435629354296}
+  _selectAbilityText: {fileID: 2657835427192923670}
+  _abilityListView: {fileID: 7352776609572451041}
 --- !u!1 &5038683218360936143
 GameObject:
   m_ObjectHideFlags: 0
@@ -857,6 +874,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectAbilityListView
       objectReference: {fileID: 0}
+    - target: {fileID: 7638101951547346548, guid: 6fd1ed7ad92e71246b4ec03c30782b06,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -868,3 +890,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2887694128929153388}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7352776609572451041 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5627645603267761037, guid: 6fd1ed7ad92e71246b4ec03c30782b06,
+    type: 3}
+  m_PrefabInstance: {fileID: 2887694128929153388}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d379b2ed851c2148ae12aa19319edc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

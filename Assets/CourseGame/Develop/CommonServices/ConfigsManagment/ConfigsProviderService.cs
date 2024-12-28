@@ -26,6 +26,8 @@ namespace Assets.CourseGame.Develop.CommonServices.ConfigsManagment
         
         public MainHeroConfig MainHeroConfig { get; private set; }
 
+        public ExperienceForUpgradeLevelConfig ExperienceForUpgradeLevelConfig { get; private set; }
+
         public void LoadAll()
         {
             //подгружать конфиги из ресурсов
@@ -34,7 +36,11 @@ namespace Assets.CourseGame.Develop.CommonServices.ConfigsManagment
             LoadLevelsListConfig();
             LoadMainHeroConfig();
             LoadAbilitiesConfigsContaier();
+            LoadExperienceForUpgradeLevelConfig();
         }
+
+        private void LoadExperienceForUpgradeLevelConfig()
+            => ExperienceForUpgradeLevelConfig = _resourcesAssetLoader.LoadResource<ExperienceForUpgradeLevelConfig>("Configs/Gameplay/ExperienceForUpgradeLevelConfig");
 
         private void LoadAbilitiesConfigsContaier()
             => AbilitiesConfigsContaier = _resourcesAssetLoader.LoadResource<AbilitiesConfigsContainer>("Configs/Gameplay/Abilities/AbilitiesConfigsContainer");

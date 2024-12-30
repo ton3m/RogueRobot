@@ -2,6 +2,7 @@
 using Assets.CourseGame.Develop.Configs.Gameplay.Creatures;
 using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.Features.AttackFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.BounceFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DamageFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DeathFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DetecteBufferFeautre;
@@ -196,18 +197,34 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
         //снаряды
 
         private string ArrowPrefabPath = "Gameplay/Projectiles/Arrow";
+        private LayerMask ProjectileDeathLayer = 1 << 7;
 
-        public Entity CreateArrow(Vector3 position, Vector3 direction, float damage)
+        public Entity CreateArrow(Vector3 position, Vector3 direction, float damage, Entity owner)
         {
             Entity prefab = _assets.LoadResource<Entity>(ArrowPrefabPath);
 
             Entity instance = Object.Instantiate(prefab, position, Quaternion.identity, null);
-
+    
             instance
                 .AddMoveDirection(new ReactiveVariable<Vector3>(direction))
                 .AddRotationDirection(new ReactiveVariable<Vector3>(direction))
                 .AddMoveSpeed(new ReactiveVariable<float>(20))
+                .AddIsProjectile(true)
+                .AddOwner(owner)
+                .AddTeam(new ReactiveVariable<int>(owner.GetTeam().Value))
+                .AddIsDead()
+                .AddDeathLayer(ProjectileDeathLayer)
+                .AddIsTouchDeathLayer()
+                .AddIsTouchAnotherTeam()
+                .AddSelfTriggerDamage(new ReactiveVariable<float>(damage))
                 .AddIsMoving();
+
+            ICompositeCondition deathCondition = new CompositeCondition(LogicOperations.AndOperation)
+               .Add(new FuncCondition(() => instance.GetIsTouchDeathLayer().Value), 0)
+               .Add(new FuncCondition(() => instance.GetIsTouchAnotherTeam().Value), 10, LogicOperations.OrOperation);
+
+            ICompositeCondition selfDestroyCondition = new CompositeCondition(LogicOperations.AndOperation)
+              .Add(new FuncCondition(() => instance.GetIsDead().Value));
 
             ICompositeCondition moveCondition = new CompositeCondition(LogicOperations.AndOperation)
                 .Add(new FuncCondition(() => true));
@@ -217,11 +234,18 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
 
             instance
                 .AddMoveCondition(moveCondition)
-                .AddRotationCondition(rotationCondition);
+                .AddRotationCondition(rotationCondition)
+                .AddDeathCondition(deathCondition)
+                .AddSelfDestroyCondition(selfDestroyCondition);
 
             instance
                 .AddBehaviour(new RigidbodyMovementBehaviour())
-                .AddBehaviour(new ForceRotationBehaviour());
+                .AddBehaviour(new ForceRotationBehaviour())
+                .AddBehaviour(new SelfTriggerDeathLayerTouchDetector())
+                .AddBehaviour(new SelfTriggerTouchAnotherTeamDetector())
+                .AddBehaviour(new InstantDeathBehaviour())
+                .AddBehaviour(new DealDamageOnSelfTriggerBehaviour())
+                .AddBehaviour(new SelfDestroyBehaviour());
 
             instance.Initialize();
 

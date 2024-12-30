@@ -73,6 +73,17 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities.CodeGeneration
 
             {EntityValues.Level, typeof(ReactiveVariable<int>) },
             {EntityValues.Experience, typeof(ReactiveVariable<float>) },
+
+            {EntityValues.Owner, typeof(Entity) },
+            {EntityValues.IsProjectile, typeof(bool) },
+
+            {EntityValues.DeathLayer, typeof(LayerMask) },
+            {EntityValues.IsTouchDeathLayer, typeof(ReactiveVariable<bool>) },
+            {EntityValues.IsTouchAnotherTeam, typeof(ReactiveVariable<bool>) },
+
+            {EntityValues.BounceCount, typeof(ReactiveVariable<int>) },
+            {EntityValues.BounceEvent, typeof(ReactiveEvent<RaycastHit>) },
+            {EntityValues.LayerToBounceReaction, typeof(LayerMask) },
         };
 
         [InitializeOnLoadMethod]

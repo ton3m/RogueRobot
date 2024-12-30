@@ -8,6 +8,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.AttackFeature
 {
     public class InstantShootBehaviour : IEntityInitialize, IEntityDispose
     {
+        private Entity _entity;
         private ReactiveEvent _attackEvent;
 
         private ReactiveVariable<float> _damage;
@@ -24,6 +25,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.AttackFeature
 
         public void OnInit(Entity entity)
         {
+            _entity = entity;
             _attackEvent = entity.GetInstantAttackEvent();
             _damage = entity.GetDamage();
             _shootPoint = entity.GetShootPoint();
@@ -33,7 +35,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.AttackFeature
 
         private void OnAttackEvent()
         {
-            _entityFactory.CreateArrow(_shootPoint.position, _shootPoint.forward, _damage.Value);
+            _entityFactory.CreateArrow(_shootPoint.position, _shootPoint.forward, _damage.Value, _entity);
         }
 
         public void OnDispose()

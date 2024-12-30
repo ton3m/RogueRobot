@@ -58,5 +58,17 @@
 
         Experience,
         Level,
+
+        IsProjectile,
+        Owner,
+
+        DeathLayer,
+        IsTouchDeathLayer,
+
+        IsTouchAnotherTeam,
+
+        BounceCount,
+        BounceEvent,
+        LayerToBounceReaction,
     }
 }

@@ -3,6 +3,8 @@ using Assets.CourseGame.Develop.Configs.Common.Wallet;
 using Assets.CourseGame.Develop.Configs.Gameplay;
 using Assets.CourseGame.Develop.Configs.Gameplay.Abilities;
 using Assets.CourseGame.Develop.Configs.Gameplay.Creatures;
+using Assets.CourseGame.Develop.Configs.Gameplay.Loot;
+using Assets.CourseGame.Develop.Configs.Player.Stats;
 using System;
 
 namespace Assets.CourseGame.Develop.CommonServices.ConfigsManagment
@@ -28,6 +30,11 @@ namespace Assets.CourseGame.Develop.CommonServices.ConfigsManagment
 
         public ExperienceForUpgradeLevelConfig ExperienceForUpgradeLevelConfig { get; private set; }
 
+        public LootListConfig LootListConfig { get; private set; }
+
+        public PlayerStatsUpgradeConfig PlayerStatsUpgradeConfig { get; private set; }
+        public StatsViewConfig StatsViewConfig { get; private set; }
+
         public void LoadAll()
         {
             //подгружать конфиги из ресурсов
@@ -37,7 +44,19 @@ namespace Assets.CourseGame.Develop.CommonServices.ConfigsManagment
             LoadMainHeroConfig();
             LoadAbilitiesConfigsContaier();
             LoadExperienceForUpgradeLevelConfig();
+            LoadLootListConfig();
+            LoadStatsViewConfig();
+            LoadPlayerStatsUpgradeConfig();
         }
+
+        private void LoadStatsViewConfig()
+        => StatsViewConfig = _resourcesAssetLoader.LoadResource<StatsViewConfig>("Configs/Player/StatsViewConfig");
+
+        private void LoadPlayerStatsUpgradeConfig()
+           => PlayerStatsUpgradeConfig = _resourcesAssetLoader.LoadResource<PlayerStatsUpgradeConfig>("Configs/Player/PlayerStatsUpgradeConfig");
+
+        private void LoadLootListConfig()
+          => LootListConfig = _resourcesAssetLoader.LoadResource<LootListConfig>("Configs/Gameplay/Loot/LootListConfig");
 
         private void LoadExperienceForUpgradeLevelConfig()
             => ExperienceForUpgradeLevelConfig = _resourcesAssetLoader.LoadResource<ExperienceForUpgradeLevelConfig>("Configs/Gameplay/ExperienceForUpgradeLevelConfig");

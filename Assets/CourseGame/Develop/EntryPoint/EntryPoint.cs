@@ -8,7 +8,10 @@ using Assets.CourseGame.Develop.CommonServices.LoadingScreen;
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
 using Assets.CourseGame.Develop.CommonServices.Timer;
 using Assets.CourseGame.Develop.CommonServices.Wallet;
+using Assets.CourseGame.Develop.CommonUI.Wallet;
 using Assets.CourseGame.Develop.DI;
+using Assets.CourseGame.Develop.Gameplay.Features.StatsFeature;
+using System;
 using UnityEngine;
 
 namespace Assets.CourseGame.Develop.EntryPoint
@@ -45,10 +48,20 @@ namespace Assets.CourseGame.Develop.EntryPoint
 
             RegisterTimerServiceFactory(projectContainer);
 
+            RegisterStatUpgradeService(projectContainer);
+
+            RegisterWalletPresenterFactory(projectContainer);
+
             projectContainer.Initialize();
             //все регистрации прошли
             projectContainer.Resolve<ICoroutinePerformer>().StartPerform(_gameBootstrap.Run(projectContainer));
         }
+
+        private void RegisterWalletPresenterFactory(DIContainer container)
+            => container.RegisterAsSingle(c => new WalletPresenterFactory(c));
+
+        private void RegisterStatUpgradeService(DIContainer container)
+            => container.RegisterAsSingle(c => new StatsUpgradeService(c.Resolve<PlayerDataProvider>(), c.Resolve<ConfigsProviderService>())).NonLazy();
 
         private void RegisterTimerServiceFactory(DIContainer container)
             => container.RegisterAsSingle(c => new TimerServiceFactory(c));

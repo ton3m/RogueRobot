@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/CourseGame/Scenes/Empty.unity
     guid: bb0c8249ec3ec84449ee91fd2bba1f36
+  - enabled: 1
+    path: Assets/CourseGame/Scenes/CharacterPreviewScene.unity
+    guid: 33d832635c2ca9044b209d88d3ece4d2
   m_configObjects: {}

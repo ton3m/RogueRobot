@@ -2,6 +2,7 @@ using Assets.CourseGame.Develop.CommonServices.AssetsManagment;
 using Assets.CourseGame.Develop.CommonServices.ConfigsManagment;
 using Assets.CourseGame.Develop.CommonServices.CoroutinePerfomer;
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
+using Assets.CourseGame.Develop.CommonUI.Wallet;
 using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.AI;
 using Assets.CourseGame.Develop.Gameplay.Entities;
@@ -12,11 +13,13 @@ using Assets.CourseGame.Develop.Gameplay.Features.EnemiesFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.GameModeStagesFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.InputFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.LevelUPFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.LootFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.MainHeroFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.PauseFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.TeamFeature;
 using Assets.CourseGame.Develop.Gameplay.States;
 using Assets.CourseGame.Develop.Gameplay.UI;
+using Assets.CourseGame.Develop.Gameplay.UI.HealthBars;
 using Assets.CourseGame.Develop.Utils.Conditions;
 using System;
 using System.Collections;
@@ -30,12 +33,15 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
         private DIContainer _container;
 
         private GameplayStateMachine _gameplayStateMachine;
+        private CreaturesHealthDisplayPresenter _creatureHealthDisplayPresenter;
 
         public IEnumerator Run(DIContainer container, GameplayInputArgs gameplayInputArgs)
         {
             _container = container;
 
             ProcessRegistrations(gameplayInputArgs);
+
+            _creatureHealthDisplayPresenter = _container.Resolve<CreaturesHealthDisplayPresenter>();
 
             Debug.Log($"Подгружаем ресурсы для уровня {gameplayInputArgs.LevelNumber}");
             Debug.Log("Создаем персонажа");
@@ -51,7 +57,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
         {
             //Делаем регистрации для сцены геймплея
 
-            _container.RegisterAsSingle<IInputService>(c => new DesktopInput());
+            _container.RegisterAsSingle<IInputService>(c => new DesktopInput(_container.Resolve<GameplayUIRoot>().Joystick));
             _container.RegisterAsSingle<IPauseService>(c => new TimeScalePauseService());
 
             _container.RegisterAsSingle(c => new EntitiesBuffer());
@@ -59,6 +65,30 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
             _container.RegisterAsSingle(c => new EntityFactory(c));
             _container.RegisterAsSingle(c => new AIFactory(c));
             _container.RegisterAsSingle(c => new EnemyFactory(c));
+
+            _container.RegisterAsSingle(c => new HealthBarFactory(c));
+            _container.RegisterAsSingle(c => new CreaturesHealthPresentersFactory(c));
+
+            _container.RegisterAsSingle(c => new NextStagePreperationFrameFactory(c));
+
+            _container.RegisterAsSingle(c =>
+            c.Resolve<CreaturesHealthPresentersFactory>().CreateHealthDisplayPresenter()).NonLazy();
+
+            _container.RegisterAsSingle(c => new GameplayUIFactory(c));
+
+            _container.RegisterAsSingle(c => new MainHeroCoinsViewCreatorService(
+                c.Resolve<MainHeroHolderService>(), c.Resolve<WalletPresenterFactory>(), 
+                c.Resolve<GameplayUIRoot>())).NonLazy();
+
+            _container.RegisterAsSingle(c => new MainHeroExperienceBarCreatorService(
+                c.Resolve<MainHeroHolderService>(), c.Resolve<GameplayUIFactory>())).NonLazy();
+
+            _container.RegisterAsSingle(c => _container.Resolve<GameplayUIFactory>().CreateStagePresenter()).NonLazy();
+
+            _container.RegisterAsSingle(c => new LootFactory(c));
+            _container.RegisterAsSingle(c => new DropLootService(
+                c.Resolve<ConfigsProviderService>(), c.Resolve<LootFactory>()));
+            _container.RegisterAsSingle(c => new LootPullingService(c.Resolve<EntitiesBuffer>())).NonLazy();
 
             _container.RegisterAsSingle(c => new AbilityFactory(c));
             _container.RegisterAsSingle(c => new AbilityPresentersFactory(c));
@@ -168,10 +198,15 @@ namespace Assets.CourseGame.Develop.Gameplay.Infrastructure
                 _popup.Disable(() => _container.Resolve<IPauseService>().Unpause());
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _container.Resolve<MainHeroHolderService>().MainHero.GetInstantAttackEvent().Invoke();
-            }
+            //if (Input.GetKeyDown(KeyCode.Space))
+            //{
+            //    _container.Resolve<MainHeroHolderService>().MainHero.GetInstantAttackEvent().Invoke();
+            //}
+        }
+
+        private void LateUpdate()
+        {
+            _creatureHealthDisplayPresenter.LateUpdate();
         }
     }
 }

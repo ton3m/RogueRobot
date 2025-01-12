@@ -70,5 +70,22 @@
         BounceCount,
         BounceEvent,
         LayerToBounceReaction,
+
+        IsSpawningProcess,
+
+        Target,
+
+        IsPullable,
+        IsPullingProcess,
+        IsCollected,
+
+        Coins,
+
+        DropLootCondition,
+        LootIsDropped,
+
+        HealthBarPoint,
+
+        CollidersDisabledOnDeath
     }
 }

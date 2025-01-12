@@ -84,6 +84,22 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities.CodeGeneration
             {EntityValues.BounceCount, typeof(ReactiveVariable<int>) },
             {EntityValues.BounceEvent, typeof(ReactiveEvent<RaycastHit>) },
             {EntityValues.LayerToBounceReaction, typeof(LayerMask) },
+
+            {EntityValues.IsSpawningProcess, typeof(ReactiveVariable<bool>) },
+            {EntityValues.Target, typeof(ReactiveVariable<Entity>) },
+
+            {EntityValues.IsPullable, typeof(ReactiveVariable<bool>) },
+            {EntityValues.IsPullingProcess, typeof(ReactiveVariable<bool>) },
+            {EntityValues.IsCollected, typeof(ReactiveVariable<bool>) },
+
+            {EntityValues.Coins, typeof(ReactiveVariable<int>) },
+
+            {EntityValues.DropLootCondition, typeof(ICompositeCondition) },
+            {EntityValues.LootIsDropped, typeof(ReactiveVariable<bool>) },
+
+            {EntityValues.HealthBarPoint, typeof(Transform) },
+
+            {EntityValues.CollidersDisabledOnDeath, typeof(IEnumerable<Collider>) },
         };
 
         [InitializeOnLoadMethod]

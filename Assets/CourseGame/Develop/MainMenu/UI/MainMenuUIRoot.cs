@@ -7,6 +7,7 @@ namespace Assets.CourseGame.Develop.MainMenu.UI
     {
         [field: SerializeField] public IconsWithTextListView WalletView { get; private set; }
         [field: SerializeField] public ActionButton OpenLevelsMenuButton { get; private set; }
+        [field: SerializeField] public ActionButton OpenStatsUpgradePopupButton { get; private set; }
 
         [field: SerializeField] public Transform HUDLayer { get; private set; }
         [field: SerializeField] public Transform PopupsLayer { get; private set; }

@@ -6,7 +6,9 @@ using Assets.CourseGame.Develop.Gameplay.Features.BounceFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DamageFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DeathFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.DetecteBufferFeautre;
+using Assets.CourseGame.Develop.Gameplay.Features.LootFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.MovementFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.SpawnFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.StatsFeature;
 using Assets.CourseGame.Develop.Utils.Conditions;
 using Assets.CourseGame.Develop.Utils.Reactive;
@@ -31,19 +33,11 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
             _entitiesBuffer = container.Resolve<EntitiesBuffer>();
         }
 
-        public Entity CreateMainHero(Vector3 position, MainHeroConfig config, int team)
+        public Entity CreateMainHero(Vector3 position, Dictionary<StatTypes, float> baseStats, MainHeroConfig config, int team)
         {
             Entity prefab = _assets.LoadResource<Entity>(MainHeroPrefabPath);
 
             Entity instance = Object.Instantiate(prefab, position, Quaternion.identity, null);
-
-            Dictionary<StatTypes, float> baseStats = new Dictionary<StatTypes, float>()
-            {
-                {StatTypes.MoveSpeed, config.MoveSpeed},
-                {StatTypes.AttackInterval, config.AttackInterval},
-                {StatTypes.MaxHealth, config.MaxHealth},
-                {StatTypes.Damage, config.Damage},
-            };
 
             Dictionary<StatTypes, float> modifiedStats = new Dictionary<StatTypes, float>(baseStats);
 
@@ -128,6 +122,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddBehaviour(new DirectionsInstantShootingBehaviour(this))
                 .AddBehaviour(new AttackCancelBehaviour())
                 .AddBehaviour(new DeathBehaviour())
+                .AddBehaviour(new DisableCollidersOnDeathBehaviour())
                 .AddBehaviour(new SelfDestroyBehaviour());
 
             instance.Initialize();
@@ -154,19 +149,23 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddIsDead()
                 .AddIsDeathProcess()
                 .AddSelfTriggerDamage(new ReactiveVariable<float>(config.SelfTriggerDamage))
+                .AddIsSpawningProcess()
                 .AddTeam(new ReactiveVariable<int>(team));
 
             ICompositeCondition deathCondition = new CompositeCondition(LogicOperations.AndOperation)
                 .Add(new FuncCondition(() => instance.GetHealth().Value <= 0));
 
             ICompositeCondition takeDamageCondition = new CompositeCondition(LogicOperations.AndOperation)
-               .Add(new FuncCondition(() => instance.GetIsDead().Value == false));
+               .Add(new FuncCondition(() => instance.GetIsDead().Value == false))
+               .Add(new FuncCondition(() => instance.GetIsSpawningProcess().Value == false));
 
             ICompositeCondition moveCondition = new CompositeCondition(LogicOperations.AndOperation)
-                .Add(new FuncCondition(() => instance.GetIsDead().Value == false));
+                .Add(new FuncCondition(() => instance.GetIsDead().Value == false))
+                .Add(new FuncCondition(() => instance.GetIsSpawningProcess().Value == false));
 
             ICompositeCondition rotationCondition = new CompositeCondition(LogicOperations.AndOperation)
-                .Add(new FuncCondition(() => instance.GetIsDead().Value == false));
+                .Add(new FuncCondition(() => instance.GetIsDead().Value == false))
+                .Add(new FuncCondition(() => instance.GetIsSpawningProcess().Value == false));
 
             ICompositeCondition selfDestroyCondition = new CompositeCondition(LogicOperations.AndOperation)
                 .Add(new FuncCondition(() => instance.GetIsDead().Value))
@@ -180,12 +179,14 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
                 .AddSelfDestroyCondition(selfDestroyCondition);
 
             instance
+                .AddBehaviour(new StartSpawnProcessOnInitBehaviour())
                 .AddBehaviour(new CharacterControllerMovementBehaviour())
                 .AddBehaviour(new RotationBehaviour())
                 .AddBehaviour(new ApplyDamageFilterBehaviour())
                 .AddBehaviour(new ApplyDamageBehaviour())
                 .AddBehaviour(new DealDamageOnSelfTriggerBehaviour())
                 .AddBehaviour(new DeathBehaviour())
+                .AddBehaviour(new DisableCollidersOnDeathBehaviour())
                 .AddBehaviour(new SelfDestroyBehaviour());
 
             instance.Initialize();
@@ -267,6 +268,43 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
             instance.Initialize();
 
             _entitiesBuffer.Add(instance);
+
+            return instance;
+        }
+
+        //лут
+
+        public Entity CreatePullable(Entity prefab, Vector3 position)
+        {
+            Entity instance = Object.Instantiate(prefab, position, Quaternion.identity, null);
+
+            instance
+                .AddIsPullable(new ReactiveVariable<bool>(true))
+                .AddIsPullingProcess()
+                .AddIsSpawningProcess(new ReactiveVariable<bool>(true))
+                .AddTarget(new ReactiveVariable<Entity>(null))
+                .AddMoveDirection()
+                .AddMoveSpeed(new ReactiveVariable<float>(12))
+                .AddIsMoving()
+                .AddIsCollected();
+
+            ICompositeCondition moveCondition = new CompositeCondition(LogicOperations.AndOperation)
+                .Add(new FuncCondition(() => instance.GetIsPullingProcess().Value && instance.GetIsSpawningProcess().Value == false));
+
+            ICompositeCondition selfDestroyCondition = new CompositeCondition(LogicOperations.AndOperation)
+                .Add(new FuncCondition(() => instance.GetIsCollected().Value));
+
+            instance
+                .AddMoveCondition(moveCondition)
+                .AddSelfDestroyCondition(selfDestroyCondition);
+
+            instance
+                .AddBehaviour(new TransformMovementBehaviour())
+                .AddBehaviour(new GenerateMoveDirectionTargetBehaviour())
+                .AddBehaviour(new CollectedOnNearToTargetBehaviour())
+                .AddBehaviour(new SelfDestroyBehaviour());
+
+            instance.Initialize();
 
             return instance;
         }

@@ -1,6 +1,7 @@
 ﻿using Assets.CourseGame.Develop.CommonServices.ConfigsManagment;
 using Assets.CourseGame.Develop.CommonServices.Wallet;
 using Assets.CourseGame.Develop.DI;
+using Assets.CourseGame.Develop.Utils.Reactive;
 
 namespace Assets.CourseGame.Develop.CommonUI.Wallet
 {
@@ -20,5 +21,8 @@ namespace Assets.CourseGame.Develop.CommonUI.Wallet
 
         public CurrencyPresenter CreateCurrencyPresenter(IconWithText view, CurrencyTypes currencyType)
             => new CurrencyPresenter(_walletService.GetCurrency(currencyType), currencyType, view, _configsProviderService.CurrencyIconsConfig);
+
+        public CurrencyPresenter CreateCurrencyPresenter(IconWithText view, CurrencyTypes currencyType, IReadOnlyVariable<int> currency)
+            => new CurrencyPresenter(currency, currencyType, view, _configsProviderService.CurrencyIconsConfig);
     }
 }

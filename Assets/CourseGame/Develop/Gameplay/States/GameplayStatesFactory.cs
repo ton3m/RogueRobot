@@ -2,10 +2,12 @@
 using Assets.CourseGame.Develop.CommonServices.DataManagment.DataProviders;
 using Assets.CourseGame.Develop.CommonServices.LevelsManagment;
 using Assets.CourseGame.Develop.CommonServices.SceneManagment;
+using Assets.CourseGame.Develop.CommonServices.Wallet;
 using Assets.CourseGame.Develop.DI;
 using Assets.CourseGame.Develop.Gameplay.Entities;
 using Assets.CourseGame.Develop.Gameplay.Features.GameModeStagesFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.InputFeature;
+using Assets.CourseGame.Develop.Gameplay.Features.LootFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.MainHeroFeature;
 using Assets.CourseGame.Develop.Gameplay.Features.PauseFeature;
 using Assets.CourseGame.Develop.Utils.Conditions;
@@ -30,7 +32,10 @@ namespace Assets.CourseGame.Develop.Gameplay.States
 
         public NextStagePreperationState CreateNextStagePreperationState()
         {
-            return new NextStagePreperationState(_container.Resolve<EntityFactory>());
+            return new NextStagePreperationState(
+                _container.Resolve<EntityFactory>(),
+                _container.Resolve<StageProviderService>(),
+                _container.Resolve<NextStagePreperationFrameFactory>());
         }
 
         public StageProcessState CreateStageProcessState(GameplayInputArgs gameplayInputArgs)
@@ -49,7 +54,9 @@ namespace Assets.CourseGame.Develop.Gameplay.States
                 gameplayInputArgs,
                 _container.Resolve<SceneSwitcher>(),
                 _container.Resolve<IPauseService>(),
-                _container.Resolve<IInputService>());
+                _container.Resolve<IInputService>(),
+                _container.Resolve<WalletService>(),
+                _container.Resolve<MainHeroHolderService>());
         }
 
         public DefeatState CreateDefeatState()
@@ -60,6 +67,13 @@ namespace Assets.CourseGame.Develop.Gameplay.States
                 _container.Resolve<IInputService>());
         }
 
+        public CollectLootState CreateCollectLootState()
+        {
+            return new CollectLootState(
+                _container.Resolve<LootPullingService>(),
+                _container.Resolve<MainHeroHolderService>());
+        }
+
         public GameplayStateMachine CreateGameLoopState(GameplayInputArgs gameplayInputArgs)
         {
             GameplayStatesFactory gameplayStatesFactory = _container.Resolve<GameplayStatesFactory>();
@@ -68,10 +82,12 @@ namespace Assets.CourseGame.Develop.Gameplay.States
 
             NextStagePreperationState nextStagePreperationState = gameplayStatesFactory.CreateNextStagePreperationState();
             StageProcessState stageProcessState = gameplayStatesFactory.CreateStageProcessState(gameplayInputArgs);
+            CollectLootState collectLootState = gameplayStatesFactory.CreateCollectLootState();
 
             ActionCondition preperationToStageProcesStateCondition = new ActionCondition(nextStagePreperationState.OnNextStageTriggerComplete);
 
-            ActionCondition stageProcessToPreperationStateCondition = new ActionCondition(stageProcessState.StageComplete);
+            ActionCondition stageProcessToCollectStateCondition = new ActionCondition(stageProcessState.StageComplete);
+            ActionCondition collectToPreperationStateCondition = new ActionCondition(collectLootState.LootCollected);
 
             gameplayFinishConditionService.WinCondition
                 .Add(new ActionCondition(nextStagePreperationState.OnNextStageTriggerComplete))
@@ -80,11 +96,13 @@ namespace Assets.CourseGame.Develop.Gameplay.States
 
             List<IDisposable> disposables = new List<IDisposable>();
             disposables.Add(preperationToStageProcesStateCondition);
-            disposables.Add(stageProcessToPreperationStateCondition);
+            disposables.Add(stageProcessToCollectStateCondition);
+            disposables.Add(collectToPreperationStateCondition);
 
             GameplayStateMachine gameplayLoopState = new GameplayStateMachine(disposables);
 
             gameplayLoopState.AddState(nextStagePreperationState);
+            gameplayLoopState.AddState(collectLootState);
             gameplayLoopState.AddState(stageProcessState);
 
             gameplayLoopState.AddTransition(
@@ -92,8 +110,12 @@ namespace Assets.CourseGame.Develop.Gameplay.States
                 preperationToStageProcesStateCondition);
 
             gameplayLoopState.AddTransition(
-                stageProcessState, nextStagePreperationState,
-                stageProcessToPreperationStateCondition);
+                stageProcessState, collectLootState,
+                stageProcessToCollectStateCondition);
+
+            gameplayLoopState.AddTransition(
+                collectLootState, nextStagePreperationState,
+                collectToPreperationStateCondition);
 
             return gameplayLoopState;
         }

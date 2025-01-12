@@ -70,6 +70,8 @@ namespace Assets.CourseGame.Develop.Gameplay.Features.LevelUPFeature
 
                 yield return new WaitUntil(() => PopupIsOpened == false);
             }
+
+            _selectAbilityProcess = null;
         }
 
         private void OnAbilitySelected(AbilitySelectPopupPresenter popup)

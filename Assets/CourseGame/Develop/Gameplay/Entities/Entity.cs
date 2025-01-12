@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assets.CourseGame.Develop.Gameplay.Entities
 {
-    public class Entity : MonoBehaviour
+    public class Entity : MonoBehaviour, IEquatable<Entity>
     {
         public event Action<Entity> Initialized;
         public event Action<Entity> Disposed;
@@ -140,5 +140,7 @@ namespace Assets.CourseGame.Develop.Gameplay.Entities
 
             return true;
         }
+
+        public bool Equals(Entity other) => other == this;
     }
 }

@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db8fbaa36736c4c842f357ba916bab, type: 3}
+  m_Name: AbilityDtopOptionsConfig
+  m_EditorClassIdentifier: 
+  _dropOptions:
+  - <Config>k__BackingField: {fileID: 11400000, guid: 7d7e48e9090ef96469ab45f136b73ffc,
+      type: 2}
+    <Level>k__BackingField: 1
+  - <Config>k__BackingField: {fileID: 11400000, guid: a497a244c29c0cb45ada50c87e169cda,
+      type: 2}
+    <Level>k__BackingField: 1
+  - <Config>k__BackingField: {fileID: 11400000, guid: 1dc2fa9b64f2bca468df8678e0ea3ff3,
+      type: 2}
+    <Level>k__BackingField: 1
+  - <Config>k__BackingField: {fileID: 11400000, guid: f6ee1bee1d36029468f49ca85fa6a2c1,
+      type: 2}
+    <Level>k__BackingField: 1
+  - <Config>k__BackingField: {fileID: 11400000, guid: c64685c55c6595d4c8b4a7d2209e9145,
+      type: 2}
+    <Level>k__BackingField: 1
+  - <Config>k__BackingField: {fileID: 11400000, guid: 8897fb8bfa5af8f47af4b0cb8576fa4e,
+      type: 2}
+    <Level>k__BackingField: 1
+  - <Config>k__BackingField: {fileID: 11400000, guid: d6120b8cd0fa9d54e8795453a6ab4698,
+      type: 2}
+    <Level>k__BackingField: 1
+  - <Config>k__BackingField: {fileID: 11400000, guid: c64685c55c6595d4c8b4a7d2209e9145,
+      type: 2}
+    <Level>k__BackingField: 2
+  - <Config>k__BackingField: {fileID: 11400000, guid: 8897fb8bfa5af8f47af4b0cb8576fa4e,
+      type: 2}
+    <Level>k__BackingField: 2
+  - <Config>k__BackingField: {fileID: 11400000, guid: f6ee1bee1d36029468f49ca85fa6a2c1,
+      type: 2}
+    <Level>k__BackingField: 2
+  - <Config>k__BackingField: {fileID: 11400000, guid: d6120b8cd0fa9d54e8795453a6ab4698,
+      type: 2}
+    <Level>k__BackingField: 2
+  - <Config>k__BackingField: {fileID: 11400000, guid: 8820ded0332c65e43b2629b2827985e6,
+      type: 2}
+    <Level>k__BackingField: 1
+  - <Config>k__BackingField: {fileID: 11400000, guid: 8820ded0332c65e43b2629b2827985e6,
+      type: 2}
+    <Level>k__BackingField: 2
